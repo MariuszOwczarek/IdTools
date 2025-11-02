@@ -108,7 +108,7 @@ def generate_ids(
     """Generate one or more IDs and save them to uuid.jsonl"""
     # pick provider based on the chosen flag
     if sum([uuid4, ksuid, sha256, ulid]) > 1:
-        typer.echo("Error: please specify only one provider flag (--uuid / --ksuid / --sha256).")
+        typer.echo("Error: please specify only one provider flag (--uuid4 / --ksuid / --sha256 / --ulid).")
         raise typer.Exit(code=1)
 
     if uuid4:
