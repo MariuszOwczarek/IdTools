@@ -9,7 +9,8 @@ from typing import Protocol
 import typer
 from rich.console import Console
 from rich.table import Table
-
+from rich.panel import Panel
+from rich import box
 
 
 #ERRORS
@@ -129,8 +130,15 @@ def generate_ids(
         new_id = provider.generate_id()
         ts = datetime.now(timezone.utc)
         repo.save(new_id, provider.name, ts)
-        console.print(f"[dim]{ts.isoformat()}[/dim] [cyan]{new_id}[/cyan]")
 
+        console.print(
+        Panel.fit(
+            f"Generated [bold]{count}[/bold] ID(s)\nProvider: [cyan]{provider.name}[/cyan]\nId: [green]{new_id}[/green]",
+            title="ID List",
+            border_style="cyan",
+            box=box.DOUBLE_EDGE,
+            )
+            )
     console.print(f"[green]Saved {count} record(s) to[/green] [bold]{repo.path}[/bold]")
 
 
@@ -139,27 +147,50 @@ def list_ids(
     limit: int = typer.Option(10, "--limit", "-l", help="How many last IDs to show"),
     no_color: bool = typer.Option(False, "--no-color", help="Disable color output"),
 ):
-    
-    console = Console(no_color=no_color)
-
     """List last generated IDs from the JSONL file."""
-    repo = JsonlIdRepository()
     console = Console(no_color=no_color)
+    repo = JsonlIdRepository()
     records = repo.list(limit)
 
+    # 🟡 If no records, show a yellow warning panel
     if not records:
-        console.print("[yellow]No records found.[/yellow]")
+        console.print(
+            Panel.fit(
+                "[yellow]No records found.[/yellow]\n"
+                "Tip: generate some first with [bold]idtool gen[/bold].",
+                title="Nothing to Show",
+                border_style="yellow",
+                box=box.ROUNDED,
+            )
+        )
         raise typer.Exit(code=0)
 
-    table = Table(title=f"Last {min(limit, len(records))} IDs")
-    table.add_column("timestamp", style="dim")
-    table.add_column("provider", style="cyan")
-    table.add_column("id", style="bold")
+    # 🟢 Table of IDs
+    table = Table(title=None, show_lines=False, box=box.SIMPLE_HEAVY)
+    table.add_column("Timestamp", style="dim", no_wrap=True)
+    table.add_column("Provider", style="cyan", no_wrap=True)
+    table.add_column("ID", style="bold", overflow="fold")
 
     for rec in records:
-        table.add_row(rec.get("timestamp",""), rec.get("provider",""), rec.get("id",""))
+        table.add_row(
+            rec.get("timestamp", ""),
+            rec.get("provider", ""),
+            rec.get("id", "")
+        )
+
+    # 🧊 Optional header panel above table
+    console.print(
+        Panel.fit(
+            f"Showing [bold]{min(limit, len(records))}[/bold] record(s)\n"
+            f"Source: [bold]{repo.path}[/bold]",
+            title="ID List",
+            border_style="cyan",
+            box=box.DOUBLE_EDGE,
+        )
+    )
 
     console.print(table)
+
 
 if __name__ == "__main__":
     app()
