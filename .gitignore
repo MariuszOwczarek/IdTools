@@ -1,1 +1,51 @@
+# 🐍 --- PYTHON BUILD & CACHE ---
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Wirtualne środowiska
 .venv/
+venv/
+env/
+
+# Pliki kompilacji / pakowania
+build/
+dist/
+*.egg-info/
+*.egg
+
+# 🧪 --- TESTS / COVERAGE ---
+.coverage
+htmlcov/
+.tox/
+pytest_cache/
+*.log
+
+# 🧰 --- IDE / EDITORY ---
+# Visual Studio Code
+.vscode/
+# JetBrains / PyCharm
+.idea/
+# macOS
+.DS_Store
+# Windows
+Thumbs.db
+
+# 📦 --- KONFIGI LOKALNE ---
+.env
+*.local
+*.sqlite
+ids.jsonl
+ids.db
+
+# 🧱 --- SYSTEMY / BACKUPY ---
+*.bak
+*.swp
+*.swo
+*.tmp
+*~
+
+# 🔒 --- MISC ---
+# pliki zrzutów
+*.dump
+*.log

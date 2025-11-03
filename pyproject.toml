@@ -1,0 +1,20 @@
+[project]
+name = "idtool"
+version = "0.0.2"
+description = "CLI tool for generating and saving IDs (UUID, KSUID, ULID, SHA256)"
+authors = [{ name = "Twoje Imię", email = "twoj@email.com" }]
+requires-python = ">=3.11"
+dependencies = [
+    "typer>=0.12",
+    "rich>=13.7",
+    "sqlalchemy>=2.0",
+    "ulid-py",
+    "ksuid>=1.3"
+]
+
+[project.scripts]
+idtool = "idtool.entrypoints.cli:app"
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
